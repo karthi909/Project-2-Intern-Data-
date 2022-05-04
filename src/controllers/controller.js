@@ -28,23 +28,22 @@ const createIntern = async (req, res) => {
         if(data.email.trim().length == 0) return res.status(400).send({msg:"email is Requried"})
         if(data.mobile.trim().length == 0 ) return res.status(400).send({msg:"mobile Number is Requried"})
 
-        let email = req.body.email
+       
 
-        let validemail = await collageModel.findOne({email: email}, {email: 1} )
-        console.log(email)
-
-        if (validemail == email) return res.send({ msg: `This ${email} is already used` }) //checking the author id is valid or not
+        
 
         let collageid = req.body.collageId   //authorid receiving from request body
         if (collageid.trim().length == 0) return res.send({ status: false, Error: 'collage Id is missing' }) //if authorid is not present 
         if (!mongoose.isValidObjectId(collageid)) return res.status(404).send({ status: false, Error: "Invalid Mongoose object Id" })  //here we are checking auhtorid is valid are not
 
         let collage = await collageModel.findOne({ _id: collageid }, { _id: 1 }); //finding the data by authorid 
-        console.log(collage)
+       
         if(collage == null || undefined) return res.status(400).send({msg:"not a valid Id"})
 
+
       
-        
+        let getUniqueValues = await internModel.findOne({ $or: [{ email: data.email }, { mobile: data.mobile }] });
+        if (getUniqueValues) return res.status(400).send({ status: false, message: "Email or Mobile number already exist" })
         
 
         let savedData = await internModel.create(data)
@@ -55,9 +54,44 @@ const createIntern = async (req, res) => {
     }
 }
 
-const 
+// const getCOllageDetails = async (req, res) => {
+
+//     try{
+//     let data = req.query
+    
+
+//     let clgdetails = await collageModel.findOne(data);
+//     console.log(clgdetails)
+//     let collageId = clgdetails._id
+
+//     console.log(collageId)
+
+//     let InternDetails = await internModel.find({collageId});
+
+//     console.log(InternDetails._id)
+
+//     let CollageDetails = {
+//         name: clgdetails.name,
+//         fullName: clgdetails.fullName,
+//         intrests:[{
+//             _id: InternDetails._id,
+//             name: InternDetails.name,
+//             email: InternDetails.email,
+//             mobile: InternDetails.mobile
+//         }]
+//     };
+
+//     res.status(200).send({ status: true, message: " successfuly got the details", data: CollageDetails})
+// }
+// catch(err){
+//     res.status(500).send({status: false, Error: err.message})
+// }
+    
+    
+     
+// }
 
 
-
+// module.exports.getCOllageDetails = getCOllageDetails
 module.exports.createIntern = createIntern
 module.exports.createCollage = createCollage
