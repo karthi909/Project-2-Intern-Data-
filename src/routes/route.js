@@ -12,7 +12,7 @@ router.post("/functionup/colleges", controller.createCollage )
 
 router.post("/functionup/interns", controller.createIntern)
 
-// router.get("/functionup/collegeDetails", controller.getCOllageDetails)
+router.get("/functionup/collegeDetails", controller.getCOllageDetails)
 
 
 module.exports = router;

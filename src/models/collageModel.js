@@ -10,7 +10,8 @@ const collageSchema = new mongoose.Schema({
         required: true,
     },
     logoLink:{
-        type: String
+        type: String,
+        required: true
     },
     isDeleted:{
         type: Boolean,

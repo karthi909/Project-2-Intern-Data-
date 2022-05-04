@@ -28,10 +28,6 @@ const createIntern = async (req, res) => {
         if(data.email.trim().length == 0) return res.status(400).send({msg:"email is Requried"})
         if(data.mobile.trim().length == 0 ) return res.status(400).send({msg:"mobile Number is Requried"})
 
-       
-
-        
-
         let collageid = req.body.collageId   
         if (collageid.trim().length == 0) return res.send({ status: false, Error: 'collage Id is missing' })
         if (!mongoose.isValidObjectId(collageid)) return res.status(404).send({ status: false, Error: "Invalid Mongoose object Id" }) 
@@ -54,45 +50,36 @@ const createIntern = async (req, res) => {
     }
 }
 
-// const getCOllageDetails = async (req, res) => {
+const getCOllageDetails = async (req, res) => {
 
-//     try{
-//     let data = req.query
-    
+    try{
+        let collegeName = req.query.collegeName;
+        if (!collegeName) return res.status(400).send({ status: false, message: "Enter College Name" });
+        let validString = /\d/;
 
-//     let clgdetails = await collageModel.findOne(data);
-//     console.log(clgdetails)
-//     let collageId = clgdetails._id
+        if (validString.test(collegeName)) return res.status(400).send({ status: false, message: "Enter a valid college name" })
 
-//     console.log(collageId)
+        let getCollegeData = await collageModel.findOne({ name: collegeName }).select({ name: 1, fullName: 1, logoLink: 1 });   
+        if(!getCollegeData) return res.status(404).send({ status: false, message: "College not found! check the name and try again" });
 
-//     let InternDetails = await internModel.find({collageId});
+        let {...data} = getCollegeData._doc
 
-//     console.log(InternDetails._id)
+        let getInterns = await internModel.find({ collegeId: data._id }).select({ name: 1, email: 1, mobile: 1 });
+        if(!getInterns) return res.status(404).send({ status: false, message: "No interns found" });
 
-//     let CollageDetails = {
-//         name: clgdetails.name,
-//         fullName: clgdetails.fullName,
-//         intrests:[{
-//             _id: InternDetails._id,
-//             name: InternDetails.name,
-//             email: InternDetails.email,
-//             mobile: InternDetails.mobile
-//         }]
-//     };
+        delete(data._id);
+        data.interests = getInterns;
 
-//     res.status(200).send({ status: true, message: " successfuly got the details", data: CollageDetails})
-// }
-// catch(err){
-//     res.status(500).send({status: false, Error: err.message})
-// }
-    
-    
-     
-// }
+        res.status(200).send({ status: true, message: "All okk" , data: data });
+    }
+    catch(err){
+    res.status(500).send({status: false, Error: err.message})
+     }
+         
+}
 
 
-// module.exports.getCOllageDetails = getCOllageDetails
+module.exports.getCOllageDetails = getCOllageDetails
 
 
 module.exports.createIntern = createIntern
