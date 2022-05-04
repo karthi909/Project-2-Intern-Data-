@@ -32,11 +32,11 @@ const createIntern = async (req, res) => {
 
         
 
-        let collageid = req.body.collageId   //authorid receiving from request body
-        if (collageid.trim().length == 0) return res.send({ status: false, Error: 'collage Id is missing' }) //if authorid is not present 
-        if (!mongoose.isValidObjectId(collageid)) return res.status(404).send({ status: false, Error: "Invalid Mongoose object Id" })  //here we are checking auhtorid is valid are not
+        let collageid = req.body.collageId   
+        if (collageid.trim().length == 0) return res.send({ status: false, Error: 'collage Id is missing' })
+        if (!mongoose.isValidObjectId(collageid)) return res.status(404).send({ status: false, Error: "Invalid Mongoose object Id" }) 
 
-        let collage = await collageModel.findOne({ _id: collageid }, { _id: 1 }); //finding the data by authorid 
+        let collage = await collageModel.findOne({ _id: collageid }, { _id: 1 }); 
        
         if(collage == null || undefined) return res.status(400).send({msg:"not a valid Id"})
 
@@ -93,5 +93,7 @@ const createIntern = async (req, res) => {
 
 
 // module.exports.getCOllageDetails = getCOllageDetails
+
+
 module.exports.createIntern = createIntern
 module.exports.createCollage = createCollage
