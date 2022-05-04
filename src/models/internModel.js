@@ -30,7 +30,7 @@ const internSchema = new mongoose.Schema({
         unique: true,
         validate: [validateNumber, 'please fill the valid Mobile Number']
     },
-    collageId:{
+    collegeId:{
         type: ObjectId,
         ref: 'Collages',
         required: true

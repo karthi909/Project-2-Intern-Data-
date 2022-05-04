@@ -53,24 +53,18 @@ const createIntern = async (req, res) => {
 const getCOllageDetails = async (req, res) => {
 
     try{
-        let collegeName = req.query.collegeName;
-        if (!collegeName) return res.status(400).send({ status: false, message: "Enter College Name" });
-        let validString = /\d/;
 
-        if (validString.test(collegeName)) return res.status(400).send({ status: false, message: "Enter a valid college name" })
+        let data = req.query
+        if (data.length == 0) return res.status(400).send({ status: false, message: "provide the College name" })
+        let findCollege = await collageModel.find({name : data.collegeName})
+        if(findCollege.length==0) return res.status(404).send({status:false, message: `${data.collegeName} doesn't exist`})
 
-        let getCollegeData = await collageModel.findOne({ name: collegeName }).select({ name: 1, fullName: 1, logoLink: 1 });   
-        if(!getCollegeData) return res.status(404).send({ status: false, message: "College not found! check the name and try again" });
+        let findIntern = await internModel.find({collegeId : findCollege[0]._id}).select({_id:1, name:1, email:1, mobile:1})
+        if(findIntern.length==0) return res.status(404).send({status:false, messsage: `No intern applied in ${data.collegeName}`})
 
-        let {...data} = getCollegeData._doc
+        res.status(200).send({status : true, data : {name : data.collegeName,fullName : findCollege[0].fullName,logoLink: findCollege[0].logoLink,interests : findIntern}})
 
-        let getInterns = await internModel.find({ collegeId: data._id }).select({ name: 1, email: 1, mobile: 1 });
-        if(!getInterns) return res.status(404).send({ status: false, message: "No interns found" });
 
-        delete(data._id);
-        data.interests = getInterns;
-
-        res.status(200).send({ status: true, message: "All okk" , data: data });
     }
     catch(err){
     res.status(500).send({status: false, Error: err.message})
