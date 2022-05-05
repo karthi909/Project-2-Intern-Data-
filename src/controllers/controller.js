@@ -33,9 +33,23 @@ const createCollage = async (req, res) => {
 const createIntern = async (req, res) => {
     try{
         let data = req.body
+
+        let collageName = data.collageName
+
         if(Object.keys(data).length == 0) return res.status(400).send({status: false,msg:"data is Missing"})
 
-        const { name, email, mobile, isDeleted, collegeName } = data
+        if(collageName.length == 0) return res.status(400).send({status :false, message : "College Name is required"})
+
+        let findCollege = await collageModel.find({name : collageName})
+
+        if(findCollege.length == 0)  return res.status(404).send({status: false, message: `${collageName} doesn't exist`})
+
+        if(findCollege[0]._id != data.collegeId) return res.status(400).send({status : false, messsage : `${data.collegeId} is not a College ID of ${collageName}`})
+
+        delete data.collegeName
+      
+
+
          
         if(data.name.trim().length == 0) return res.status(400).send({status: false, msg:"name is Required"})
         if(!data.name) return res.status(400).send({status:false, msg:"name is Requried"})
