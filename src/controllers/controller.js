@@ -63,7 +63,7 @@ const getCOllageDetails = async (req, res) => {
         let data = req.query
         if (data.length == 0) return res.status(400).send({ status: false, message: "provide the College name" })
         let findCollege = await collageModel.find({name : data.collegeName})
-        if(findCollege.length==0) return res.status(404).send({status:false, message: `${data.collegeName} doesn't exist`})
+        if(findCollege.length==0) return res.status(404).send({status:false, message: ` collageName ${data.collegeName} doesn't exist`})
 
         let findIntern = await internModel.find({collegeId : findCollege[0]._id}).select({_id:1, name:1, email:1, mobile:1})
         if(findIntern.length==0) return res.status(404).send({status:false, messsage: `No intern applied in ${data.collegeName}`})
