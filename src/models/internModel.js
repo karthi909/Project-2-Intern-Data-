@@ -1,12 +1,12 @@
 const mongoose = require('mongoose');
 const ObjectId = mongoose.Schema.Types.ObjectId
 
-var validateNumber = function(mobile) {
+let validateNumber = function(mobile) {
     var res = /^(\+\d{1,3}[- ]?)?\d{10}$/ ;
     return res.test(mobile)
 };
 
-var validateEmail = function(email) {
+let validateEmail = function(email) {
     var re = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
     return re.test(email)
 };

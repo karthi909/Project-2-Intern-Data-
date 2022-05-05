@@ -40,7 +40,21 @@ const createIntern = async (req, res) => {
         if(collage == null || undefined) return res.status(400).send({msg:"not a valid Id"})
 
 
+        let validNumber = function(mobile) {
+            var res = /^(\+\d{1,3}[- ]?)?\d{10}$/ ;
+            return res.test(data.mobile)
+        };
+
+        console.log(validNumber())
+        if(!validNumber()) return res.status(400).send({status: false, msg:`given ${data.mobile} Not a valid Mobile Number`})
+
+        let validEmail = function(email) {
+            var re = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
+            return re.test(data.email)
+        };
+        if(!validEmail()) return res.status(400).send({status: false, msg:`given ${data.email} Not a valid Email address`})
       
+
         let getUniqueValues = await internModel.findOne({ mobile: data.mobile });
         if (getUniqueValues) return res.status(400).send({ status: false, message: `Mobile_number- ${data.mobile} already existing in the data` })
 
