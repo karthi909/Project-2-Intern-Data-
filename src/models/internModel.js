@@ -15,7 +15,8 @@ let validateEmail = function(email) {
 const internSchema = new mongoose.Schema({
     name: {
         type: String,
-        required: true
+        required: true,
+        trim: true
     },
     email: {
         type: String,

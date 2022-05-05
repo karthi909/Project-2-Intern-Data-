@@ -3,11 +3,13 @@ const mongoose = require('mongoose')
 const collageSchema = new mongoose.Schema({
     name:{
         type: String,
-        required: true
+        required: true,
+        trim: true
     },
     fullName:{
         type: String,
         required: true,
+        trim: true
     },
     logoLink:{
         type: String,

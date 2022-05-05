@@ -6,11 +6,17 @@ const mongoose = require("mongoose")
 
 const createCollage = async (req, res) => {
     try{
-        let data = req.body
+        let data = req.body 
         if(Object.keys(data).length == 0) return res.status(400).send({status: false, msg:"data is Missing"})
-        if(data.name.trim().length == 0) return res.status(400).send({status:false, msg:"name is Required"})
+
+        if(!data.name) return res.status(400).send({status: false, msg:"name feild is Required"})
+        if(data.name.trim().length == 0) return res.status(400).send({status:false, msg:"name is Required"}) 
+
         if(data.fullName.trim().length == 0) return res.status(400).send({status: false, msg:"fullName is Required"})
+        if(!data.fullName) return res.status(400).send({status:false, msg:"fullName is Required"})
+
         if(data.logoLink.trim().length == 0) return res.status(400).send({status: false, msg:'LogoLink is Required'})
+        if(!data.logoLink) return res.status(400).send({status: false, msg:"Logolink is Required"})
 
         let getUniqueValues = await collageModel.findOne({name: data.name  });
         if (getUniqueValues) return res.status(400).send({ status: false, message: `${data.name} already exist` })
@@ -28,27 +34,32 @@ const createIntern = async (req, res) => {
     try{
         let data = req.body
         if(Object.keys(data).length == 0) return res.status(400).send({status: false,msg:"data is Missing"})
+
+        const { name, email, mobile, isDeleted, collegeName } = data
+         
         if(data.name.trim().length == 0) return res.status(400).send({status: false, msg:"name is Required"})
+        if(!data.name) return res.status(400).send({status:false, msg:"name is Requried"})
+
         if(!data.email) return res.status(400).send({status: false, msg:"email is Requried"})
         if(!data.mobile) return res.status(400).send({status: false, msg:"mobile Number is Requried"})
 
         let collageid = req.body.collegeId   
         if (collageid.trim().length == 0) return res.send({ status: false, Error: 'collage Id is missing' })
-        if (!mongoose.isValidObjectId(collageid)) return res.status(404).send({ status: false, Error: "Invalid Mongoose object Id" }) 
+        if (!mongoose.isValidObjectId(collageid)) return res.status(404).send({ status: false, Error: "Invalid Mongoose object Id" })
+        
+        
 
-        let collage = await collageModel.findOne({ _id: collageid }, { _id: 1 }); 
+        let collage = await collageModel.findById({ _id: collageid }, { _id: 1 });
         if(collage == null || undefined) return res.status(400).send({msg:"not a valid Id"})
+        
 
-
-        let validNumber = function(mobile) {
-            var res = /^(\+\d{1,3}[- ]?)?\d{10}$/ ;
-            return res.test(data.mobile)
+        let validNumber = function() {
+            var res = /^(\+\d{1,3}[- ]?)?\d{10}$/ ; 
+            return res.test(data.mobile) 
         };
-
-        console.log(validNumber())
         if(!validNumber()) return res.status(400).send({status: false, msg:`given ${data.mobile} Not a valid Mobile Number`})
 
-        let validEmail = function(email) {
+        let validEmail = function() {
             var re = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
             return re.test(data.email)
         };
@@ -60,10 +71,11 @@ const createIntern = async (req, res) => {
 
         let getUniqueEmail = await internModel.findOne({email: data.email});
         if(getUniqueEmail) return res.status(400).send({status: false, msg: `email- "${data.email}" already existing in data `})
-        
 
+        
+        
         let savedData = await internModel.create(data)
-        res.status(201).send({status: true, msg:"Intern Created Successfully", data: savedData })
+        res.status(201).send({status: true, msg:"Intern Created Successfully", data: savedData})
     }
     catch(err){
         res.status(500).send({status: false, Error: err.message})
@@ -76,8 +88,11 @@ const getCOllageDetails = async (req, res) => {
 
         let data = req.query
         if (data.length == 0) return res.status(400).send({ status: false, message: "provide the College name" })
-        let findCollege = await collageModel.find({name : data.collegeName})
+        let findCollege = await collageModel.find({name : data.collegeName, isDeleted: false})
+        
+
         if(findCollege.length==0) return res.status(404).send({status:false, message: ` collageName ${data.collegeName} doesn't exist`})
+        
 
         let findIntern = await internModel.find({collegeId : findCollege[0]._id}).select({_id:1, name:1, email:1, mobile:1})
         if(findIntern.length==0) return res.status(404).send({status:false, messsage: `No intern applied in ${data.collegeName}`})
