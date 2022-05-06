@@ -34,7 +34,7 @@ const internSchema = new mongoose.Schema({
     collegeId:{
         type: ObjectId,
         ref: 'Collages',
-        required: true
+        
     },
     isDeleted: {
         type: Boolean,
