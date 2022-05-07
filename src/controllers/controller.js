@@ -11,12 +11,14 @@ const createCollage = async (req, res) => {
 
         if(!data.name) return res.status(400).send({status: false, msg:"name feild is Required"})
         if(data.name.trim().length == 0) return res.status(400).send({status:false, msg:"name is Required"}) 
-
-        if(data.fullName.trim().length == 0) return res.status(400).send({status: false, msg:"fullName is Required"})
+        
         if(!data.fullName) return res.status(400).send({status:false, msg:"fullName is Required"})
+       if(data.fullName.trim().length == 0) return res.status(400).send({status: false, msg:"fullName is Required"})
+       
 
-        if(data.logoLink.trim().length == 0) return res.status(400).send({status: false, msg:'LogoLink is Required'})
-        if(!data.logoLink) return res.status(400).send({status: false, msg:"Logolink is Required"})
+        
+        if(!data.logolink) return res.status(400).send({status: false, msg:"Logolink is Required"})
+        if(data.logolink.trim().length == 0) return res.status(400).send({status: false, msg:'LogoLink is Required'})
 
         let getUniqueValues = await collageModel.findOne({name: data.name  });
         if (getUniqueValues) return res.status(400).send({ status: false, message: `${data.name} already exist` })
@@ -39,9 +41,9 @@ const createIntern = async (req, res) => {
         if(Object.keys(data).length == 0) return res.status(400).send({status: false,msg:"data is Missing"})
 
         let iscollegeName = await collageModel.findOne({ name: collegeName });
-        console.log(iscollegeName)
+        //console.log(iscollegeName)
         if(!iscollegeName) return res.send({status: false, msg:`There is no college with this name ${collegeName}`})
-        console.log(iscollegeName)
+      
         data.collegeId = iscollegeName._id;
 
         delete data.collegeName
@@ -49,9 +51,9 @@ const createIntern = async (req, res) => {
 
 
 
-         
-        if(data.name.trim().length == 0) return res.status(400).send({status: false, msg:"name is Required"})
         if(!data.name) return res.status(400).send({status:false, msg:"name is Requried"})
+        if(data.name.trim().length == 0) return res.status(400).send({status: false, msg:"name is Required"})
+        
 
         if(!data.email) return res.status(400).send({status: false, msg:"email is Requried"})
         if(!data.mobile) return res.status(400).send({status: false, msg:"mobile Number is Requried"})
@@ -91,7 +93,9 @@ const getCOllageDetails = async (req, res) => {
     try{
 
         let data = req.query
-        if (data.length == 0) return res.status(400).send({ status: false, message: "provide the College name" })
+        //if (data.length == 0) return res.status(400).send({ status: false, message: "provide the College name" })
+        
+        if(Object.keys(data) == 0) return res.status(400).send({ status: false, message: "provide the College name" })
         let findCollege = await collageModel.find({name : data.collegeName, isDeleted: false})
         
 

@@ -11,7 +11,7 @@ const collageSchema = new mongoose.Schema({
         required: true,
         trim: true
     },
-    logoLink:{
+    logolink:{
         type: String,
         required: true
     },
