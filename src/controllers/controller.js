@@ -41,7 +41,7 @@ const createIntern = async (req, res) => {
         if(Object.keys(data).length == 0) return res.status(400).send({status: false,msg:"data is Missing"})
 
         let iscollegeName = await collageModel.findOne({ name: collegeName });
-        //console.log(iscollegeName)
+        //console.log(iscollegeName) if not gives --null--
         if(!iscollegeName) return res.send({status: false, msg:`There is no college with this name ${collegeName}`})
       
         data.collegeId = iscollegeName._id;
@@ -93,7 +93,7 @@ const getCOllageDetails = async (req, res) => {
     try{
 
         let data = req.query
-        //if (data.length == 0) return res.status(400).send({ status: false, message: "provide the College name" })
+       
         
         if(Object.keys(data) == 0) return res.status(400).send({ status: false, message: "provide the College name" })
         let findCollege = await collageModel.find({name : data.collegeName, isDeleted: false})
