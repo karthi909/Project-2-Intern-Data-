@@ -96,7 +96,7 @@ const getCOllageDetails = async (req, res) => {
        
         
         if(Object.keys(data) == 0) return res.status(400).send({ status: false, message: "provide the College name" })
-        let findCollege = await collageModel.find({name : data.collegeName, isDeleted: false})
+        let findCollege = await collageModel.findOne({name : data.collegeName, isDeleted: false})
         
 
         if(findCollege.length==0) return res.status(404).send({status:false, message: ` collageName ${data.collegeName} doesn't exist`})
